@@ -27,8 +27,8 @@ void listCars() {
 }
 
 void createCars(String brand, String model) {
-  var ramdomID = Random();
-  var car = Car(ramdomID.nextInt(1000), brand, model);
+  var randomID = Random();
+  var car = Car(randomID.nextInt(1000), brand, model);
   cars.add(car);
   print('You created a new car successfully');
   print('');
@@ -39,7 +39,7 @@ void updateCars(int id, String brand, String model) {
   if (carIndex >= 0) {
     cars[carIndex].brand = brand;
     cars[carIndex].model = model;
-    print('You updated $brand and $model to ID : $id successfully');
+    print('You updated $brand and $model to ID: $id successfully');
     print('');
   } else {
     print('Your ID is invalid');
@@ -59,11 +59,15 @@ void deleteCars(int id) {
   }
 }
 
+bool isCarIdExists(int id) {
+  return cars.any((car) => car.id == id);
+}
+
 void main() {
   print('CRUD operations on cars');
 
   while (true) {
-    print('You can run this program by typing this commands:');
+    print('You can run this program by typing these commands:');
     print('1 : list');
     print('2 : create');
     print('3 : update');
@@ -89,26 +93,44 @@ void main() {
       print('');
     } else if (command == 'update') {
       stdout.write('Enter the car ID you want to update: ');
-      var id = int.parse(stdin.readLineSync()!);
-      stdout.write('Enter the new car brand: ');
-      var brand = stdin.readLineSync()!;
-      stdout.write('Enter the new car model: ');
-      var model = stdin.readLineSync()!;
-      updateCars(id, brand, model);
+      var idStr = stdin.readLineSync()!;
       print('');
-      listCars();
-      print('');
+      var id = int.parse(idStr);
+      if (!isCarIdExists(id)) {
+        print('Car with ID: $id does not exist');
+        print('');
+      }
+      else{
+        stdout.write('Enter the new car brand: ');
+        var brand = stdin.readLineSync()!;
+        stdout.write('Enter the new car model: ');
+        var model = stdin.readLineSync()!;
+        updateCars(id, brand, model);
+        print('');
+        listCars();
+        print('');
+      }
     } else if (command == 'delete') {
       stdout.write('Enter the car ID you want to delete: ');
-      var id = int.parse(stdin.readLineSync()!);
-      deleteCars(id);
-      print('');
-      listCars();
-      print('');
+      var idStr = stdin.readLineSync()!;
+
+      var id = int.parse(idStr);
+
+      if (!isCarIdExists(id)) {
+        print('Car with ID: $id does not exist');
+        print('');
+      }
+      else{
+        deleteCars(id);
+        print('');
+        listCars();
+        print('');
+      }
+      
     } else if (command == 'exit') {
       break;
     } else {
-      print('Your command is invalid!!Please Try again');
+      print('Your command is invalid! Please try again.');
       print('');
     }
   }
